@@ -1,5 +1,10 @@
 import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
 
+/**
+ * Email logging function - forwards email entries to n8n for Google Sheets logging
+ * Requires N8N_WEBHOOK_URL environment variable to be set in Netlify
+ */
+
 // Validate email format
 const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
