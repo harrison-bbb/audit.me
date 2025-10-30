@@ -17,6 +17,7 @@ interface Message {
 const Index = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [sessionId, setSessionId] = useState<string>(() => crypto.randomUUID());
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -29,6 +30,7 @@ const Index = () => {
 
   const handleNewChat = () => {
     setMessages([]);
+    setSessionId(crypto.randomUUID());
     toast.success("New chat started");
   };
 
@@ -40,8 +42,12 @@ const Index = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "auth": "your-auth-token-here",
           },
-          body: JSON.stringify({ message }),
+          body: JSON.stringify({ 
+            message,
+            sessionId 
+          }),
         }
       );
 
