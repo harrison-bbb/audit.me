@@ -11,16 +11,16 @@ export const ChatMessage = ({ message, isUser, timestamp }: ChatMessageProps) =>
   return (
     <div
       className={cn(
-        "flex w-full mb-4 animate-slide-up",
+        "flex w-full mb-6 animate-slide-up",
         isUser ? "justify-end" : "justify-start"
       )}
     >
       <div
         className={cn(
-          "max-w-[80%] rounded-2xl px-4 py-3 shadow-lg",
+          "max-w-[85%] rounded-3xl px-5 py-4 shadow-sm",
           isUser
-            ? "bg-chat-user text-chat-user-foreground ml-auto"
-            : "bg-chat-bot text-chat-bot-foreground border border-border/50"
+            ? "bg-chat-user text-chat-user-foreground"
+            : "bg-card text-card-foreground border border-border/30"
         )}
       >
         <div className="prose prose-invert prose-sm max-w-none">

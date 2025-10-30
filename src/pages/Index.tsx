@@ -3,7 +3,9 @@ import { ChatMessage } from "@/components/ChatMessage";
 import { ChatInput } from "@/components/ChatInput";
 import { TypingIndicator } from "@/components/TypingIndicator";
 import { toast } from "sonner";
-import { Bot } from "lucide-react";
+import { Plus } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import BBBLogo from "@/assets/BBB_Logo_Minimal_White.png";
 
 interface Message {
   id: string;
@@ -24,6 +26,11 @@ const Index = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages, isTyping]);
+
+  const handleNewChat = () => {
+    setMessages([]);
+    toast.success("New chat started");
+  };
 
   const sendToWebhook = async (message: string) => {
     try {
@@ -66,9 +73,21 @@ const Index = () => {
       
       setIsTyping(false);
 
+      // Handle various response formats from n8n workflow
+      let botResponseText = "I received your message!";
+      if (response.response) {
+        botResponseText = response.response;
+      } else if (response.message && response.message !== "Workflow was started") {
+        botResponseText = response.message;
+      } else if (response.output) {
+        botResponseText = response.output;
+      } else if (response.text) {
+        botResponseText = response.text;
+      }
+
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: response.response || response.message || "I received your message!",
+        text: botResponseText,
         isUser: false,
         timestamp: new Date(),
       };
@@ -92,47 +111,55 @@ const Index = () => {
   return (
     <div className="flex flex-col h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm">
-        <div className="max-w-4xl mx-auto px-4 py-4 flex items-center gap-3">
-          <div className="relative">
-            <Bot className="h-8 w-8 text-primary" />
-            <div className="absolute inset-0 blur-lg bg-primary/30 -z-10" />
+      <header className="border-b border-border bg-card/30 backdrop-blur-sm sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <img src={BBBLogo} alt="BBB Logo" className="h-8 w-auto" />
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-foreground">BBB Assistant</h1>
-            <p className="text-sm text-muted-foreground">Powered by BlackBoxBots</p>
-          </div>
+          
+          <Button
+            onClick={handleNewChat}
+            variant="outline"
+            size="sm"
+            className="gap-2"
+          >
+            <Plus className="h-4 w-4" />
+            New Chat
+          </Button>
         </div>
       </header>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto px-4 py-6">
-        <div className="max-w-4xl mx-auto">
-          {messages.length === 0 && (
-            <div className="flex flex-col items-center justify-center h-full text-center animate-fade-in">
-              <div className="relative mb-6">
-                <Bot className="h-20 w-20 text-primary/50" />
-                <div className="absolute inset-0 blur-2xl bg-primary/20 -z-10 animate-glow-pulse" />
-              </div>
-              <h2 className="text-2xl font-bold mb-2 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+      <div className="flex-1 overflow-y-auto px-4 py-8">
+        <div className="max-w-3xl mx-auto">
+          {messages.length === 0 ? (
+            <div className="flex flex-col items-center justify-center h-full min-h-[60vh] text-center animate-fade-in">
+              <img 
+                src={BBBLogo} 
+                alt="BBB Logo" 
+                className="h-16 w-auto mb-8 opacity-60" 
+              />
+              <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 Welcome to BBB Assistant
               </h2>
-              <p className="text-muted-foreground max-w-md">
-                Start a conversation by typing a message below. I'm here to help!
+              <p className="text-muted-foreground text-lg max-w-md">
+                Your intelligent assistant powered by BlackBoxBots
               </p>
             </div>
+          ) : (
+            <>
+              {messages.map((message) => (
+                <ChatMessage
+                  key={message.id}
+                  message={message.text}
+                  isUser={message.isUser}
+                  timestamp={message.timestamp}
+                />
+              ))}
+              
+              {isTyping && <TypingIndicator />}
+            </>
           )}
-          
-          {messages.map((message) => (
-            <ChatMessage
-              key={message.id}
-              message={message.text}
-              isUser={message.isUser}
-              timestamp={message.timestamp}
-            />
-          ))}
-          
-          {isTyping && <TypingIndicator />}
           
           <div ref={messagesEndRef} />
         </div>
