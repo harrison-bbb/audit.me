@@ -1,90 +1,4 @@
 import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
-import { google } from "googleapis";
-
-// Initialize Google Sheets API
-const getGoogleSheetsClient = () => {
-  const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-    },
-    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-  });
-
-  return google.sheets({ version: "v4", auth });
-};
-
-// Log message to Google Sheets
-const logToGoogleSheets = async (
-  email: string,
-  sessionId: string,
-  messageType: "user" | "bot",
-  content: string
-) => {
-  const sheets = getGoogleSheetsClient();
-  const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID;
-  const sheetName = process.env.SHEET_NAME_CHAT_LOGS || "Chat Logs";
-
-  if (!spreadsheetId) {
-    throw new Error("Google Spreadsheet ID not configured");
-  }
-
-  const timestamp = new Date().toISOString();
-  const values = [[timestamp, email, sessionId, messageType, content]];
-
-  await sheets.spreadsheets.values.append({
-    spreadsheetId,
-    range: `${sheetName}!A:E`,
-    valueInputOption: "USER_ENTERED",
-    requestBody: {
-      values,
-    },
-  });
-};
-
-// Call n8n webhook
-const callN8nWebhook = async (message: string, sessionId: string) => {
-  const webhookUrl = process.env.N8N_WEBHOOK_URL;
-  const authToken = process.env.N8N_AUTH_TOKEN;
-
-  if (!webhookUrl) {
-    throw new Error("n8n webhook URL not configured");
-  }
-
-  const response = await fetch(webhookUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(authToken && { auth: authToken }),
-    },
-    body: JSON.stringify({
-      message,
-      sessionId,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`n8n webhook failed: ${response.statusText}`);
-  }
-
-  const data = await response.json();
-
-  // Handle various response formats from n8n
-  let botMessage = "";
-  if (data.response) {
-    botMessage = data.response;
-  } else if (data.message) {
-    botMessage = data.message;
-  } else if (data.output) {
-    botMessage = data.output;
-  } else if (data.text) {
-    botMessage = data.text;
-  } else {
-    botMessage = JSON.stringify(data);
-  }
-
-  return botMessage;
-};
 
 const handler: Handler = async (
   event: HandlerEvent,
@@ -131,14 +45,51 @@ const handler: Handler = async (
       };
     }
 
-    // Log user message to Google Sheets
-    await logToGoogleSheets(email, sessionId, "user", message);
+    // Call n8n webhook with all data
+    // n8n will handle: logging user message → calling AI → logging bot response → returning response
+    const webhookUrl = process.env.N8N_WEBHOOK_URL;
+    const authToken = process.env.N8N_AUTH_TOKEN;
 
-    // Call n8n webhook to get bot response
-    const botResponse = await callN8nWebhook(message, sessionId);
+    if (!webhookUrl) {
+      throw new Error("n8n webhook URL not configured");
+    }
 
-    // Log bot response to Google Sheets
-    await logToGoogleSheets(email, sessionId, "bot", botResponse);
+    const timestamp = new Date().toISOString();
+
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(authToken && { auth: authToken }),
+      },
+      body: JSON.stringify({
+        action: "chat",
+        message,
+        sessionId,
+        email,
+        timestamp,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`n8n webhook failed: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+
+    // Handle various response formats from n8n
+    let botResponse = "";
+    if (data.response) {
+      botResponse = data.response;
+    } else if (data.message) {
+      botResponse = data.message;
+    } else if (data.output) {
+      botResponse = data.output;
+    } else if (data.text) {
+      botResponse = data.text;
+    } else {
+      botResponse = JSON.stringify(data);
+    }
 
     return {
       statusCode: 200,

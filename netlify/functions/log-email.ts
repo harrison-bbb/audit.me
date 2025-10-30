@@ -1,18 +1,4 @@
 import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
-import { google } from "googleapis";
-
-// Initialize Google Sheets API
-const getGoogleSheetsClient = () => {
-  const auth = new google.auth.GoogleAuth({
-    credentials: {
-      client_email: process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL,
-      private_key: process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-    },
-    scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-  });
-
-  return google.sheets({ version: "v4", auth });
-};
 
 // Validate email format
 const isValidEmail = (email: string): boolean => {
@@ -72,28 +58,33 @@ const handler: Handler = async (
       };
     }
 
-    // Get Google Sheets client
-    const sheets = getGoogleSheetsClient();
-    const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID;
-    const sheetName = process.env.SHEET_NAME_EMAILS || "Email Entries";
+    // Call n8n webhook to log email
+    const webhookUrl = process.env.N8N_WEBHOOK_URL;
+    const authToken = process.env.N8N_AUTH_TOKEN;
 
-    if (!spreadsheetId) {
-      throw new Error("Google Spreadsheet ID not configured");
+    if (!webhookUrl) {
+      throw new Error("n8n webhook URL not configured");
     }
 
-    // Prepare data for Google Sheets
     const timestamp = new Date().toISOString();
-    const values = [[timestamp, email, sessionId]];
 
-    // Append data to Google Sheets
-    await sheets.spreadsheets.values.append({
-      spreadsheetId,
-      range: `${sheetName}!A:C`,
-      valueInputOption: "USER_ENTERED",
-      requestBody: {
-        values,
+    const response = await fetch(webhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        ...(authToken && { auth: authToken }),
       },
+      body: JSON.stringify({
+        action: "log-email",
+        email,
+        sessionId,
+        timestamp,
+      }),
     });
+
+    if (!response.ok) {
+      throw new Error(`n8n webhook failed: ${response.statusText}`);
+    }
 
     return {
       statusCode: 200,
