@@ -6,6 +6,8 @@ import { toast } from "sonner";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import BBBLogo from "@/assets/BBB_Logo_Minimal_White.png";
+import { useAuth } from "@/contexts/AuthContext";
+import EmailGate from "@/components/EmailGate";
 interface Message {
   id: string;
   text: string;
@@ -13,9 +15,9 @@ interface Message {
   timestamp: Date;
 }
 const Index = () => {
+  const { email, sessionId, isAuthenticated } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
-  const [sessionId, setSessionId] = useState<string>(() => crypto.randomUUID());
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({
@@ -27,29 +29,31 @@ const Index = () => {
   }, [messages, isTyping]);
   const handleNewChat = () => {
     setMessages([]);
-    setSessionId(crypto.randomUUID());
     toast.success("New chat started");
   };
-  const sendToWebhook = async (message: string) => {
+  const sendMessage = async (message: string) => {
     try {
-      const response = await fetch("https://n8n.srv891288.hstgr.cloud/webhook/a894c064-5707-49cf-8026-268b15c1f71f", {
+      const response = await fetch("/.netlify/functions/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "auth": "your-auth-token-here"
         },
         body: JSON.stringify({
           message,
-          sessionId
-        })
+          sessionId,
+          email,
+        }),
       });
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const error = await response.json();
+        throw new Error(error.error || "Failed to send message");
       }
+
       const data = await response.json();
       return data;
     } catch (error) {
-      console.error("Webhook error:", error);
+      console.error("Chat error:", error);
       throw error;
     }
   };
@@ -58,32 +62,22 @@ const Index = () => {
       id: Date.now().toString(),
       text: messageText,
       isUser: true,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setIsTyping(true);
+
     try {
-      const response = await sendToWebhook(messageText);
+      const data = await sendMessage(messageText);
       setIsTyping(false);
 
-      // Handle various response formats from n8n workflow
-      let botResponseText = "I received your message!";
-      if (response.response) {
-        botResponseText = response.response;
-      } else if (response.message && response.message !== "Workflow was started") {
-        botResponseText = response.message;
-      } else if (response.output) {
-        botResponseText = response.output;
-      } else if (response.text) {
-        botResponseText = response.text;
-      }
       const botMessage: Message = {
         id: (Date.now() + 1).toString(),
-        text: botResponseText,
+        text: data.response || "I received your message!",
         isUser: false,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, botMessage]);
+      setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
       setIsTyping(false);
       toast.error("Failed to send message. Please try again.");
@@ -91,14 +85,17 @@ const Index = () => {
         id: (Date.now() + 1).toString(),
         text: "Sorry, I'm having trouble connecting right now. Please try again.",
         isUser: false,
-        timestamp: new Date()
+        timestamp: new Date(),
       };
-      setMessages(prev => [...prev, errorMessage]);
+      setMessages((prev) => [...prev, errorMessage]);
     }
   };
-  return <div className="flex flex-col h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border bg-card/30 backdrop-blur-sm sticky top-0 z-10">
+  return (
+    <>
+      {!isAuthenticated && <EmailGate />}
+      <div className="flex flex-col h-screen bg-background">
+        {/* Header */}
+        <header className="border-b border-border bg-card/30 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src={BBBLogo} alt="BBB Logo" className="h-8 w-auto" />
@@ -130,8 +127,10 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Input Area */}
-      <ChatInput onSend={handleSendMessage} disabled={isTyping} />
-    </div>;
+        {/* Input Area */}
+        <ChatInput onSend={handleSendMessage} disabled={isTyping} />
+      </div>
+    </>
+  );
 };
 export default Index;
