@@ -17,7 +17,7 @@ All colors MUST be HSL.
     --popover: 0 0% 7%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 190 100% 50%;
+    --primary: 0 0% 100%;
     --primary-foreground: 0 0% 4%;
 
     --secondary: 280 60% 60%;
@@ -26,7 +26,7 @@ All colors MUST be HSL.
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 60%;
 
-    --accent: 190 100% 50%;
+    --accent: 0 0% 100%;
     --accent-foreground: 0 0% 4%;
 
     --destructive: 0 84.2% 60.2%;
@@ -34,19 +34,19 @@ All colors MUST be HSL.
 
     --border: 0 0% 20%;
     --input: 0 0% 15%;
-    --ring: 190 100% 50%;
+    --ring: 0 0% 100%;
 
     --radius: 0.75rem;
 
     /* Chat-specific tokens */
-    --chat-user-bubble: 190 100% 50%;
+    --chat-user-bubble: 0 0% 100%;
     --chat-user-bubble-foreground: 0 0% 4%;
     --chat-bot-bubble: 0 0% 12%;
     --chat-bot-bubble-foreground: 0 0% 98%;
     --chat-input-bg: 0 0% 10%;
     
     /* Glow effects */
-    --glow-primary: 190 100% 50%;
+    --glow-primary: 0 0% 100%;
     --glow-secondary: 280 60% 60%;
   }
 }
