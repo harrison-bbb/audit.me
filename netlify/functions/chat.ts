@@ -1,5 +1,10 @@
 import { Handler, HandlerEvent, HandlerContext } from "@netlify/functions";
 
+/**
+ * Chat function - forwards messages to n8n for logging and AI response
+ * Requires N8N_WEBHOOK_URL and N8N_AUTH_TOKEN environment variables
+ */
+
 const handler: Handler = async (
   event: HandlerEvent,
   context: HandlerContext
