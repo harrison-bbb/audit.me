@@ -408,3 +408,5 @@ If you encounter issues:
 2. Verify all credentials are valid
 3. Test each node individually
 4. Review the [n8n community forum](https://community.n8n.io)
+
+By Black Box Bots
