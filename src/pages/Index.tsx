@@ -100,11 +100,11 @@ const Index = () => {
         {/* Header */}
         <header className="border-b border-border bg-card/30 backdrop-blur-sm sticky top-0 z-10">
         <div className="max-w-5xl mx-auto px-6 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <a href="https://blackboxbots.com/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
             <img src={BBBLogo} alt="BBB Logo" className="h-8 w-auto" />
-          </div>
+          </a>
           
-          <Button onClick={handleNewChat} variant="outline" size="sm" className="gap-2">
+          <Button onClick={handleNewChat} variant="outline" size="sm" className="gap-2 bg-white/5 hover:bg-white/10 backdrop-blur-sm border-white/20 hover:border-white/30">
             <Plus className="h-4 w-4" />
             New Chat
           </Button>
@@ -116,21 +116,25 @@ const Index = () => {
         <div className="max-w-3xl mx-auto">
           {messages.length === 0 ? <div className="flex flex-col items-center justify-center h-full min-h-[60vh] text-center animate-fade-in">
               <img src={BBBLogo} alt="BBB Logo" className="h-16 w-auto mb-8 opacity-60" />
-              <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Welcome to BBB Audit Bot</h2>
+              <h2 className="text-3xl font-bold mb-3 text-white">Welcome to BBB Audit Bot</h2>
               <p className="text-muted-foreground text-lg max-w-md mb-8">
                 Your intelligent assistant powered by BlackBoxBots
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-3 max-w-2xl w-full px-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-w-4xl w-full px-4">
                 {[
-                  "I spend too much time on...",
-                  "I need help with...",
-                  "I want to automate..."
+                  "Client reporting takes forever",
+                  "Lead data entry is killing us",
+                  "We're drowning in client onboarding",
+                  "Managing ad campaigns manually",
+                  "Proposal creation is too slow",
+                  "Tracking project time is a mess"
                 ].map((prompt) => (
                   <button
                     key={prompt}
-                    onClick={() => setInputMessage(prompt)}
-                    className="flex-1 px-6 py-3 bg-card/50 hover:bg-card border border-border rounded-lg text-foreground hover:border-secondary/50 transition-all duration-200 hover:scale-105"
+                    onClick={() => handleSendMessage(prompt)}
+                    disabled={isTyping}
+                    className="px-4 py-3 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg text-foreground hover:border-white/30 transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
                   >
                     {prompt}
                   </button>

@@ -51,7 +51,7 @@ export const ChatInput = ({ onSend, disabled, value, onChange }: ChatInputProps)
           type="submit"
           disabled={!message.trim() || disabled}
           size="icon"
-          className="h-[56px] w-[56px] rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
+          className="h-[56px] w-[56px] rounded-full bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 hover:border-white/30 text-white shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50"
         >
           <Send className="h-5 w-5" />
         </Button>

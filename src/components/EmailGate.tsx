@@ -63,22 +63,16 @@ const EmailGate: React.FC = () => {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-300 mb-2"
-            >
-              Email Address
-            </label>
+          <div className="relative">
+            <Mail className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
             <input
-              id="email"
               type="email"
               value={emailInput}
               onChange={(e) => setEmailInput(e.target.value)}
-              placeholder="you@example.com"
-              className="w-full px-4 py-3 bg-chat-background border border-gray-700 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+              placeholder="Enter your email address"
               disabled={isSubmitting}
-              autoFocus
+              className="w-full pl-12 pr-4 py-3 bg-chat-user-bubble/30 border border-gray-700 rounded-lg text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/20 focus:border-transparent transition-all disabled:opacity-50"
+              required
             />
           </div>
 
@@ -101,7 +95,7 @@ const EmailGate: React.FC = () => {
           <button
             type="submit"
             disabled={isSubmitting || !agreedToPolicy}
-            className="w-full bg-secondary hover:bg-secondary/90 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 hover:border-white/30 text-white font-medium py-3 px-4 rounded-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
               <>

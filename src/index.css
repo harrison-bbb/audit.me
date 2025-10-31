@@ -20,8 +20,8 @@ All colors MUST be HSL.
     --primary: 0 0% 100%;
     --primary-foreground: 0 0% 4%;
 
-    --secondary: 28 100% 50%;
-    --secondary-foreground: 0 0% 100%;
+    --secondary: 0 0% 100%;
+    --secondary-foreground: 0 0% 4%;
 
     --muted: 0 0% 15%;
     --muted-foreground: 0 0% 60%;
@@ -47,7 +47,7 @@ All colors MUST be HSL.
     
     /* Glow effects */
     --glow-primary: 0 0% 100%;
-    --glow-secondary: 28 100% 50%;
+    --glow-secondary: 0 0% 100%;
   }
 }
 
