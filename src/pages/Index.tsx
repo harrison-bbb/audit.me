@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import BBBLogo from "@/assets/BBB_Logo_Minimal_White.png";
 import { useAuth } from "@/contexts/AuthContext";
 import EmailGate from "@/components/EmailGate";
+import HaloEffect from "@/components/HaloEffect";
 interface Message {
   id: string;
   text: string;
@@ -114,31 +115,44 @@ const Index = () => {
       {/* Messages Area */}
       <div className="flex-1 overflow-y-auto px-4 py-8">
         <div className="max-w-3xl mx-auto">
-          {messages.length === 0 ? <div className="flex flex-col items-center justify-center h-full min-h-[60vh] text-center animate-fade-in">
-              <img src={BBBLogo} alt="BBB Logo" className="h-16 w-auto mb-8 opacity-60" />
-              <h2 className="text-3xl font-bold mb-3 text-white">Welcome to BBB Audit Bot</h2>
-              <p className="text-muted-foreground text-lg max-w-md mb-8">
-                Your intelligent assistant powered by BlackBoxBots
-              </p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-w-4xl w-full px-4">
-                {[
-                  "Client reporting takes forever",
-                  "Lead data entry is killing us",
-                  "We're drowning in client onboarding",
-                  "Managing ad campaigns manually",
-                  "Proposal creation is too slow",
-                  "Tracking project time is a mess"
-                ].map((prompt) => (
-                  <button
-                    key={prompt}
-                    onClick={() => handleSendMessage(prompt)}
-                    disabled={isTyping}
-                    className="px-4 py-3 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg text-foreground hover:border-white/30 transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
-                  >
-                    {prompt}
-                  </button>
-                ))}
+          {messages.length === 0 ? <div className="flex flex-col items-center justify-center h-full min-h-[60vh] text-center animate-fade-in relative">
+              <HaloEffect 
+                count1={2}
+                count2={2}
+                count3={2}
+                size={400}
+                speed={8}
+                blur={80}
+                color1="#FFFFFF"
+                color2="#CCCCCC"
+                color3="#EEEEEE"
+              />
+              <div className="relative z-10">
+                <img src={BBBLogo} alt="BBB Logo" className="h-16 w-auto mb-8 opacity-60" />
+                <h2 className="text-3xl font-bold mb-3 text-white">Welcome to BBB Audit Bot</h2>
+                <p className="text-muted-foreground text-lg max-w-md mb-8">
+                  Your intelligent assistant powered by BlackBoxBots
+                </p>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 max-w-4xl w-full px-4">
+                  {[
+                    "Client reporting takes forever",
+                    "Lead data entry is killing us",
+                    "We're drowning in client onboarding",
+                    "Managing ad campaigns manually",
+                    "Proposal creation is too slow",
+                    "Tracking project time is a mess"
+                  ].map((prompt) => (
+                    <button
+                      key={prompt}
+                      onClick={() => handleSendMessage(prompt)}
+                      disabled={isTyping}
+                      className="px-4 py-3 bg-white/5 hover:bg-white/10 backdrop-blur-sm border border-white/10 rounded-lg text-foreground hover:border-white/30 transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+                    >
+                      {prompt}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div> : <>
               {messages.map(message => <ChatMessage key={message.id} message={message.text} isUser={message.isUser} timestamp={message.timestamp} />)}

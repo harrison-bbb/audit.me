@@ -52,10 +52,10 @@ const EmailGate: React.FC = () => {
       <div className="bg-chat-sidebar border border-gray-800 rounded-lg shadow-2xl max-w-md w-full p-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
         <div className="flex flex-col items-center text-center mb-6">
           <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center mb-4">
-            <Mail className="w-8 h-8 text-white" />
+            <Mail className="w-8 h-8 text-black" />
           </div>
           <h2 className="text-2xl font-bold text-white mb-2">
-            Welcome to Audit.me
+            Welcome to BBB Audit Me
           </h2>
           <p className="text-gray-400 text-sm">
             Please enter your email address to get started
