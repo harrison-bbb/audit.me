@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Send } from "lucide-react";
@@ -6,10 +6,20 @@ import { Send } from "lucide-react";
 interface ChatInputProps {
   onSend: (message: string) => void;
   disabled?: boolean;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
-export const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
-  const [message, setMessage] = useState("");
+export const ChatInput = ({ onSend, disabled, value, onChange }: ChatInputProps) => {
+  const message = value ?? "";
+  const setMessage = onChange ?? (() => {});
+
+  useEffect(() => {
+    if (value) {
+      const textarea = document.querySelector('textarea');
+      textarea?.focus();
+    }
+  }, [value]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

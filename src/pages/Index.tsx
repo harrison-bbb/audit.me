@@ -18,6 +18,7 @@ const Index = () => {
   const { email, sessionId, isAuthenticated } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
+  const [inputMessage, setInputMessage] = useState("");
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({
@@ -29,6 +30,7 @@ const Index = () => {
   }, [messages, isTyping]);
   const handleNewChat = () => {
     setMessages([]);
+    setInputMessage("");
     toast.success("New chat started");
   };
   const sendMessage = async (message: string) => {
@@ -65,6 +67,7 @@ const Index = () => {
       timestamp: new Date(),
     };
     setMessages((prev) => [...prev, userMessage]);
+    setInputMessage("");
     setIsTyping(true);
 
     try {
@@ -114,9 +117,25 @@ const Index = () => {
           {messages.length === 0 ? <div className="flex flex-col items-center justify-center h-full min-h-[60vh] text-center animate-fade-in">
               <img src={BBBLogo} alt="BBB Logo" className="h-16 w-auto mb-8 opacity-60" />
               <h2 className="text-3xl font-bold mb-3 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">Welcome to BBB Audit Bot</h2>
-              <p className="text-muted-foreground text-lg max-w-md">
+              <p className="text-muted-foreground text-lg max-w-md mb-8">
                 Your intelligent assistant powered by BlackBoxBots
               </p>
+              
+              <div className="flex flex-col sm:flex-row gap-3 max-w-2xl w-full px-4">
+                {[
+                  "I spend too much time on...",
+                  "I need help with...",
+                  "I want to automate..."
+                ].map((prompt) => (
+                  <button
+                    key={prompt}
+                    onClick={() => setInputMessage(prompt)}
+                    className="flex-1 px-6 py-3 bg-card/50 hover:bg-card border border-border rounded-lg text-foreground hover:border-secondary/50 transition-all duration-200 hover:scale-105"
+                  >
+                    {prompt}
+                  </button>
+                ))}
+              </div>
             </div> : <>
               {messages.map(message => <ChatMessage key={message.id} message={message.text} isUser={message.isUser} timestamp={message.timestamp} />)}
               
@@ -128,7 +147,12 @@ const Index = () => {
       </div>
 
         {/* Input Area */}
-        <ChatInput onSend={handleSendMessage} disabled={isTyping} />
+        <ChatInput 
+          onSend={handleSendMessage} 
+          disabled={isTyping}
+          value={inputMessage}
+          onChange={setInputMessage}
+        />
       </div>
     </>
   );
