@@ -2,11 +2,14 @@ import React, { useState } from "react";
 import { Mail, Loader2 } from "lucide-react";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 const EmailGate: React.FC = () => {
   const { setEmail } = useAuth();
   const [emailInput, setEmailInput] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [agreedToPolicy, setAgreedToPolicy] = useState(false);
 
   const validateEmail = (email: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -23,6 +26,11 @@ const EmailGate: React.FC = () => {
 
     if (!validateEmail(emailInput)) {
       toast.error("Please enter a valid email address");
+      return;
+    }
+
+    if (!agreedToPolicy) {
+      toast.error("Please agree to the privacy policy to continue");
       return;
     }
 
@@ -43,7 +51,7 @@ const EmailGate: React.FC = () => {
     <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
       <div className="bg-chat-sidebar border border-gray-800 rounded-lg shadow-2xl max-w-md w-full p-8 animate-in fade-in slide-in-from-bottom-4 duration-300">
         <div className="flex flex-col items-center text-center mb-6">
-          <div className="w-16 h-16 bg-gradient-to-br from-primary to-purple-600 rounded-full flex items-center justify-center mb-4">
+          <div className="w-16 h-16 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center mb-4">
             <Mail className="w-8 h-8 text-white" />
           </div>
           <h2 className="text-2xl font-bold text-white mb-2">
@@ -74,10 +82,26 @@ const EmailGate: React.FC = () => {
             />
           </div>
 
+          <div className="flex items-start gap-3">
+            <Checkbox
+              id="privacy-policy"
+              checked={agreedToPolicy}
+              onCheckedChange={(checked) => setAgreedToPolicy(checked as boolean)}
+              disabled={isSubmitting}
+              className="mt-1"
+            />
+            <Label
+              htmlFor="privacy-policy"
+              className="text-sm text-gray-300 leading-relaxed cursor-pointer"
+            >
+              I agree to the Black Box Bots Privacy Policy and consent to my email address and audit responses being stored for the purpose of providing my automation audit and follow-up communication.
+            </Label>
+          </div>
+
           <button
             type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-primary hover:bg-primary/90 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={isSubmitting || !agreedToPolicy}
+            className="w-full bg-secondary hover:bg-secondary/90 text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
               <>
