@@ -93,7 +93,7 @@ const EmailGate: React.FC = () => {
 
           {/* HERO SECTION - NOW AT TOP */}
           <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <h1 className="text-5xl font-bold text-foreground mb-4">
+            <h1 className="text-5xl font-serif font-bold text-foreground mb-4">
               BBB Audit Me
             </h1>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
@@ -190,7 +190,7 @@ const EmailGate: React.FC = () => {
           {/* SOCIAL PROOF SECTION */}
           <div className="mb-16 animate-in fade-in slide-in-from-bottom-4 duration-900">
             <Card className="p-8 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm border-white/20">
-              <h3 className="text-2xl font-bold text-foreground mb-4 text-center">
+              <h3 className="text-2xl font-serif font-bold text-foreground mb-4 text-center">
                 Real Results from BBB Automation
               </h3>
               <p className="text-muted-foreground text-center mb-6 max-w-2xl mx-auto">
@@ -212,7 +212,7 @@ const EmailGate: React.FC = () => {
 
           {/* VALUE SECTION */}
           <div className="mb-16 animate-in fade-in slide-in-from-bottom-4 duration-900">
-            <h2 className="text-3xl font-bold text-center text-foreground mb-12 uppercase tracking-wide">
+            <h2 className="text-3xl font-serif font-bold text-center text-foreground mb-12 uppercase tracking-wide">
               What You'll Get from the BBB Audit Me
             </h2>
 
@@ -245,7 +245,7 @@ const EmailGate: React.FC = () => {
           {/* PROCESS PREVIEW */}
           <div className="mb-16 animate-in fade-in slide-in-from-bottom-4 duration-1000">
             <Card className="p-8 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm border-white/20">
-              <h3 className="text-2xl font-bold text-foreground mb-4 text-center">
+              <h3 className="text-2xl font-serif font-bold text-foreground mb-4 text-center">
                 How It Works
               </h3>
               <p className="text-muted-foreground text-center max-w-3xl mx-auto leading-relaxed">
