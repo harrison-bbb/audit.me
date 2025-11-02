@@ -91,12 +91,22 @@ const EmailGate: React.FC = () => {
             <img src={logo} alt="BBB Logo" className="h-24 mx-auto mb-6" />
           </div>
 
-          {/* EMAIL FORM SECTION - MOVED TO TOP */}
-          <div className="max-w-2xl mx-auto mb-16 animate-in fade-in slide-in-from-bottom-4 duration-500">
+          {/* HERO SECTION - NOW AT TOP */}
+          <div className="text-center mb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h1 className="text-5xl font-bold text-foreground mb-4">
+              BBB Audit Me
+            </h1>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+              Get a custom audit from an AI trained on Harrison Smith's methodology
+            </p>
+          </div>
+
+          {/* EMAIL FORM SECTION - NOW BELOW HERO */}
+          <div className="max-w-2xl mx-auto mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
             <Card className="p-8 bg-card border-border shadow-xl">
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-sm rounded-full flex items-center justify-center mb-4 mx-auto border border-white/20">
-                  <Mail className="w-8 h-8 text-foreground" />
+                  <Mail className="w-8 h-8 text-black" />
                 </div>
                 <h3 className="text-2xl font-bold text-foreground mb-2">
                   Ready to Start Your Audit?
@@ -120,21 +130,28 @@ const EmailGate: React.FC = () => {
                   />
                 </div>
 
-                <div className="flex items-start gap-3 p-4 bg-white/5 rounded-lg border border-white/10">
+                <div className="flex items-start gap-3 p-4 bg-white/5 rounded-lg border-2 border-white/20">
                   <Checkbox
                     id="privacy-policy"
                     checked={agreedToPolicy}
                     onCheckedChange={(checked) => setAgreedToPolicy(checked as boolean)}
                     disabled={isSubmitting}
-                    className="mt-1 border-2 border-white/50 data-[state=checked]:bg-white data-[state=checked]:text-background"
+                    className="mt-0.5 h-5 w-5 border-2 border-white/70 data-[state=checked]:bg-white data-[state=checked]:text-background"
                   />
                   <Label
                     htmlFor="privacy-policy"
-                    className="text-sm text-muted-foreground leading-relaxed cursor-pointer"
+                    className="text-sm text-foreground leading-relaxed cursor-pointer"
                   >
-                    I agree to the Black Box Bots Privacy Policy and consent to my email address
-                    and audit responses being stored for the purpose of providing my automation
-                    audit and follow-up communication.
+                    I agree to the{" "}
+                    <a
+                      href="https://blackboxbots.com/privacy-policy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="underline hover:text-white transition-colors"
+                    >
+                      Privacy Policy
+                    </a>
+                    .
                   </Label>
                 </div>
 
@@ -155,6 +172,10 @@ const EmailGate: React.FC = () => {
                     </>
                   )}
                 </button>
+
+                <p className="text-sm text-center text-muted-foreground mt-2">
+                  Your interactive AI audit will begin on the next page.
+                </p>
               </form>
 
               <div className="mt-6 pt-6 border-t border-border">
@@ -166,14 +187,27 @@ const EmailGate: React.FC = () => {
             </Card>
           </div>
 
-          {/* HERO SECTION */}
-          <div className="text-center mb-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <h1 className="text-5xl font-bold text-foreground mb-4">
-              BBB Audit Me
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              Get a custom audit from an AI trained on Harrison Smith's methodology
-            </p>
+          {/* SOCIAL PROOF SECTION */}
+          <div className="mb-16 animate-in fade-in slide-in-from-bottom-4 duration-900">
+            <Card className="p-8 bg-gradient-to-br from-white/5 to-white/10 backdrop-blur-sm border-white/20">
+              <h3 className="text-2xl font-bold text-foreground mb-4 text-center">
+                Real Results from BBB Automation
+              </h3>
+              <p className="text-muted-foreground text-center mb-6 max-w-2xl mx-auto">
+                How we saved a marketing agency $84,000/year on client onboarding
+              </p>
+              <div className="aspect-video max-w-3xl mx-auto rounded-lg overflow-hidden shadow-lg">
+                <iframe
+                  width="100%"
+                  height="100%"
+                  src="https://www.youtube.com/embed/tVj0h2SKn5s"
+                  title="BBB Client Testimonial"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                ></iframe>
+              </div>
+            </Card>
           </div>
 
           {/* VALUE SECTION */}
